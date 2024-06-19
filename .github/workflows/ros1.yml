@@ -34,6 +34,7 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get -y install ros-${{ matrix.ros_distro }}-cv-bridge qtbase5-dev
+        sudo pip3 uninstall empy --yes
         
     - name: Setup catkin workspace
       run: | 
