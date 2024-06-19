@@ -76,6 +76,8 @@ private:
 	image_transport::SubscriberFilter rgbSub_;
 	image_transport::SubscriberFilter depthSub_;
 	message_filters::Subscriber<sensor_msgs::msg::CameraInfo> cameraInfoSub_;
+	
+	//write qos profile
 
 	typedef message_filters::sync_policies::ApproximateTime<
 			sensor_msgs::msg::Image,

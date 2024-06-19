@@ -41,11 +41,13 @@ CameraROS::CameraROS(bool subscribeDepth, rclcpp::Node * node) :
 {
 	qRegisterMetaType<rclcpp::Time>("ros::Time");
 	qRegisterMetaType<cv::Mat>("cv::Mat");
+	rclcpp::QoS qos_profile(rclcpp::KeepLast(1));
+  	qos_profile.best_effort();
 
 	if(!subscribeDepth_)
 	{
 		image_transport::TransportHints hints(node);
-		imageSub_ = image_transport::create_subscription(node, "image", std::bind(&CameraROS::imgReceivedCallback, this, std::placeholders::_1), hints.getTransport(), rclcpp::QoS(1).reliability((rmw_qos_reliability_policy_t)1).get_rmw_qos_profile());
+		imageSub_ = image_transport::create_subscription(node, "image", std::bind(&CameraROS::imgReceivedCallback, this, std::placeholders::_1), hints.getTransport(), rclcpp::QoS(1).reliability((rmw_qos_reliability_policy_t)0).get_rmw_qos_profile());
 	}
 	else
 	{
@@ -58,9 +60,9 @@ CameraROS::CameraROS(bool subscribeDepth, rclcpp::Node * node) :
 
 
 		image_transport::TransportHints hints(node);
-		rgbSub_.subscribe(node, "rgb/image_rect_color", hints.getTransport(), rclcpp::QoS(1).reliability((rmw_qos_reliability_policy_t)1).get_rmw_qos_profile());
-		depthSub_.subscribe(node, "depth_registered/image_raw", hints.getTransport(), rclcpp::QoS(1).reliability((rmw_qos_reliability_policy_t)1).get_rmw_qos_profile());
-		cameraInfoSub_.subscribe(node, "depth_registered/camera_info", rclcpp::QoS(1).reliability((rmw_qos_reliability_policy_t)1).get_rmw_qos_profile());
+		rgbSub_.subscribe(node, "rgb/image_rect_color", hints.getTransport(), rclcpp::QoS(1).best_effort().get_rmw_qos_profile());
+		depthSub_.subscribe(node, "depth_registered/image_raw", hints.getTransport(), rclcpp::QoS(1).best_effort().get_rmw_qos_profile());
+		cameraInfoSub_.subscribe(node, "depth_registered/camera_info",rclcpp::QoS(1).best_effort().get_rmw_qos_profile());
 
 		if(approxSync)
 		{
